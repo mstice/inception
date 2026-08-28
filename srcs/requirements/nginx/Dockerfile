@@ -1,0 +1,73 @@
+FROM debian:bookworm
+
+EXPOSE 443
+# TODO: remove curl
+RUN apt update && \
+    apt install -y --no-install-recommends --no-install-suggests \
+    nginx \
+	openssl \
+	netcat-openbsd \
+	curl \
+	ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+ARG CERT_FOLDER \
+    CERTIFICATE \
+    KEY \
+    COUNTRY \
+    STATE \
+    LOCALITY \
+    ORGANIZATION \
+    UNIT \
+    COMMON_NAME
+
+# Generate the SSL certificate
+# RUN mkdir -p ${CERT_FOLDER} && \
+#     openssl req -newkey rsa:4096 -x509 -sha256 -days 365 -nodes \
+#     -out ${CERTIFICATE} \
+#     -keyout ${KEY} \
+#     -subj "/C=${COUNTRY}/ST=${STATE}/L=${LOCALITY}/O=${ORGANIZATION}/OU=${UNIT}/CN=${COMMON_NAME}"
+
+# Generate the SSL certificate
+RUN mkdir -p ${CERT_FOLDER} && \
+    printf '%s\n' \
+    '[req]' \
+    'distinguished_name = req_distinguished_name' \
+    'x509_extensions = v3_req' \
+    'prompt = no' \
+    '' \
+    '[req_distinguished_name]' \
+    "C = ${COUNTRY}" \
+    "ST = ${STATE}" \
+    "L = ${LOCALITY}" \
+    "O = ${ORGANIZATION}" \
+    "OU = ${UNIT}" \
+    "CN = ${COMMON_NAME}" \
+    '' \
+    '[v3_req]' \
+    'subjectAltName = @alt_names' \
+    '' \
+    '[alt_names]' \
+    "DNS.1 = ${COMMON_NAME}" \
+    > /tmp/openssl.cnf && \
+    openssl req -newkey rsa:4096 -x509 -sha256 -days 365 -nodes \
+    -out ${CERTIFICATE} \
+    -keyout ${KEY} \
+    -config /tmp/openssl.cnf && \
+    rm /tmp/openssl.cnf
+#
+# Copy configuration files
+# COPY conf/nginx.conf /etc/nginx/
+
+# TODO: update
+# Copy server configuration file and update it
+COPY conf/default /etc/nginx/sites-available/
+# RUN printf "\tserver_name ${COMMON_NAME};\n" \
+#     "\tssl_certificate ${CERTIFICATE};\n" \
+#     "\tssl_certificate_key ${KEY};\n}" >> /etc/nginx/conf.d/server.conf
+
+# Create the directory for WordPress files
+RUN mkdir -p /var/www/
+RUN chown -R www-data:www-data /var/www/
+
+CMD ["nginx", "-g", "daemon off;"]
