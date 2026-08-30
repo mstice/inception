@@ -12,11 +12,13 @@ RUN apt update && \
     ca-certificates \
     php8.2-fpm \
     php8.2-mysql \
-	mariadb-client \
+    mariadb-client \
     wget \
     tar \
-	netcat-openbsd \
-	curl \
+    netcat-openbsd \
+    curl \
+    net-tools \
+    iputils-ping \
     && rm -rf /var/lib/apt/lists/*
 
 # After php installation it runs aturomatically
@@ -53,5 +55,4 @@ RUN chmod +x /bin/setup.sh
 
 # Launch setup script which installs wordpress
 # --nodaemonize avoids the php server running in the background
-# CMD ["setup.sh", "php-fpm8.2", "--nodaemonize"]
 ENTRYPOINT ["/bin/setup.sh"]

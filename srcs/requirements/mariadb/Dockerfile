@@ -9,6 +9,7 @@ EXPOSE 3306
 RUN apt update && \
     apt install -y --no-install-recommends --no-install-suggests \
     mariadb-server \
+    net-tools \
     && rm -rf /var/lib/apt/lists/*
 
 # TODO:

@@ -67,4 +67,4 @@ fi;
 #------------------------------------------------------------------------------
 
 # start the php server in the foreground
-exec php-fpm8.2 -F
+exec php-fpm8.2 --nodaemonize
