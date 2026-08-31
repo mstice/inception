@@ -31,4 +31,3 @@ sudo docker run hello-world
 
 # Add user to docker group
 sudo usermod -aG docker $USER
-systemctl restart docker
