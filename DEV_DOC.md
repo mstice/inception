@@ -30,22 +30,20 @@ Note: If first build, do not forget the following pre-requisites:
 `sudo hostsed add 127.0.0.1 https://login.42.fr` or manually edit the file at /etc/hosts  
 To remove after last purge:  
 `sudo rm -rf ~/data/database/  ~/data/wordpress_files/`  
-`sudo hostset remove 127.0.0.1 https://login.42.fr` or manually edit file  
+`sudo hostsed remove 127.0.0.1 https://login.42.fr` or manually edit file  
 
-PATH: path to docker-compose.yml  
-NAME: name of dev project  
+<sub>PATH: path to docker-compose.yml</sub>  
 
-| Action                         | Command                                      |
-| :------------------------------| :--------------------------------------------|
-| Build and start project        | docker compose -p NAME -f PATH up --build -d |
-| Stop project                   | docker compose -p NAME stop                  |
-| Restart project                | docker compose -p NAME restart               |
-| Remove containers and volumes  | docker compose -p (NAME) down -v             |
-| Purge system of Docker files   | docker system prune -a --volumes             |
-
+| Action                         | Command                                           |
+| :------------------------------| :-------------------------------------------------|
+| Build and start project        | docker compose -p inception -f PATH up --build -d |
+| Stop project                   | docker compose -p inception stop                  |
+| Restart project                | docker compose -p inception restart               |
+| Remove containers and volumes  | docker compose -p inception down -v               |
+| Purge system of Docker files   | docker system prune -a --volumes                  |
 
 
-### Managing and Containers and Volumes
+### Managing Containers and Volumes
 
 #### Containers
 To access a container, run:
@@ -53,7 +51,60 @@ To access a container, run:
 docker exec -it <container> bash
 ```
 
+#### Service Health: Service-Specific Troubleshooting
+
+##### Nginx
+Evidence that the nginx container setup is OK:  
+```bash
+docker exec nginx nginx -t
+```
+Expected output:  
+`nginx: the configuration file *location* syntax is ok`  
+`nginx: configuration file *location* test is successful`  
+
+Evidence the website is up and running:  
+```bash
+ping -c 1 login.42.fr
+```
+Expected output: `1 packets transmitted, 1 received, 0% packet loss, time 0ms`  
+
+Evidence of successful connection to website:  
+```bash
+curl -k -I https://login.42.fr
+```
+Expected output: `HTTP/1.1 200 OK` `Server: nginx/1.22.1`  
+
+##### WordPress
+Evidence that WordPress is connected to MariaDB:
+```bash
+docker exec wordpress ping -c 1 mariadb
+```
+Expected output: `1 packets transmitted, 1 received, 0% packet loss, time 0ms`
+
+Evidence that php-fpm is listening:
+```bash
+docker exec wordpress netstat -tuln | grep 9000
+```
+Expected output: `0.0.0.0:9000 LISTEN`
+
+##### MariaDB
+Evidence that mariadb is listening:
+```bash
+docker exec mariadb netstat -tuln | grep 3306
+```
+Expected output: `0.0.0.0:3306 LISTEN`
+
+Evidence that mariadb is functioning:
+```bash
+docker exec -it mariadb mysql "SHOW DATABASES;"
+```
+Expected output: a table with existing databases
+
 #### Volumes
+Verify the version of a specific docker volume by testing:
+```bash
+docker volume inspect <volume name>
+```
 
 ### Persistence of Project Data
 To ensure that project data is not lost while containers are stopped, Docker volumes are remapped to a directory on the host computer. In this case, WordPress files are stored in ~/data/wordpress_files/ and the database information is stored in ~/data/database/. Therefore, when containers are restarted, the data persists and changes to the website and the database are stored.
