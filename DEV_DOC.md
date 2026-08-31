@@ -96,7 +96,7 @@ Expected output: `0.0.0.0:3306 LISTEN`
 
 Evidence that mariadb is functioning:
 ```bash
-docker exec -it mariadb mysql "SHOW DATABASES;"
+docker exec -it mariadb mysql "SHOW TABLES;"
 ```
 Expected output: a table with existing databases
 

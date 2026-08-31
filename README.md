@@ -26,7 +26,7 @@ This final resulting application is a basic website served by Nginx, hosted by W
 
 #### Usage:
 1. Build the project by running `make`
-2. Open a browser (Chromium recommended) and go to https://\<login\>.42.fr
+2. Open a browser (Chromium recommended) and go to https://mtice.42.fr
 3. You should be greeted by a functional WordPress Website!
 
 #### Usage Commands:

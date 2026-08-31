@@ -1,4 +1,4 @@
-*This project has been created as part of the 42 curriculum by mtice*
+*This project has been created as part of the 42 curriculum by mtice.*
 
 # USER Documentation
 
@@ -46,9 +46,26 @@ docker ps
 docker images
 ```
 ### Website: Accessing and Administration
-To configure the website in a user-friendly way, simply go to https://login.42.fr/wp-admin.
+To configure the website in a user-friendly way, simply go to https://mtice.42.fr/wp-admin.
+
+|WordPress users |Roles          |
+|:---------------|:--------------|
+| wp_mtice       | Administrator |
+| mtice          | Author        |
+
+
 
 ### Managing Credentials
+#### Environment Variables
+Environment variables are expected in a `.env` file in `srcs/`.
+
+#### Passwords
+Passwords are stored in `secrets/` at the root of the repository.
+```
+secrets/db_password.txt → MariaDB for the db_user
+secrets/db_root_password.txt → MariaDB password for root account
+secrets/credentials.txt → WordPress admin password
+```
 
 ### Verifying Service Health
 
@@ -61,14 +78,14 @@ If a service does not start at all, this can also be an indication that a depend
 Before assuming an issue with project itself check the following:
 * Your internet connection
 * That you are using a compatible browser (Chromium recommended)
-* That you have the most up to date version of Docker installed (!!!!!version)
-* That you have docker compose installed (!!!!!TODO: docker compose version command)
+* That you have the most up to date version of Docker installed (`docker --version`)
+* That you have docker compose installed (`docker-compose --version`)
 * That your browser settings are set to the default recommended settings
 * That you have run `make fclean` before attempting to build again
 
 General project troubleshooting:
 
-To identify the problematic service, run:
+To identify the problematic service, run:  
 <sub>*Note that it might take 1-2 minutes for the healthy checks to run through*</sub>
 ```bash
 make fclean
@@ -81,46 +98,3 @@ Expected output:
 | nginx     | (healthy)  | 0.0.0.0:443->443/tcp, [::]:443->443/tcp |
 | wordpress | (healthy)  | 9000/tcp                                |
 | mariadb   | (healthy)  | 3306/tcp                                |
-
-#### Service Health: Service-Specific Troubleshooting
-
-##### Nginx
-Evidence that the nginx container setup is OK:  
-```bash
-docker exec -it nginx bash
-nginx -t
-exit
-```
-Expected output:  
-`nginx: the configuration file *location* syntax is ok`  
-`nginx: configuration file *location* test is successful`  
-
-Evidence the website is up and running:  
-```bash
-ping -c 1 login.42.fr
-```
-Expected output: `1 packets transmitted, 1 received, 0% packet loss, time 0ms`  
-
-Evidence of successful connection to website:  
-```bash
-curl -k -I https://login.42.fr
-```
-Expected output: `HTTP/1.1 200 OK` `Server: nginx/1.22.1`  
-
-##### WordPress
-Evidence that WordPress exists:  
-```bash
-docker exec -it wordpress bash
-
-exit
-```
-
-##### MariaDB
-Check which databases exist:
-```bash
-docker exec -it mariadb bash
-
-```
-
-
-
