@@ -20,7 +20,7 @@ SRCS := ./srcs
 
 COMPOSE := $(SRCS)/docker-compose.yml
 
-HOST_URL := login.42.fr
+HOST_URL := mtice.42.fr
 
 all:
 	@printf "${GREEN} $(BANNER) ${RESET}\n"
