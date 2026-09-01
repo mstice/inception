@@ -34,7 +34,7 @@ stop:
 	@docker compose -p $(NAME) stop
 
 restart:
-	@if [ $(docker ps -a | wc -l) > 1 ]; then \
+	@if [ -n "$$(docker compose -p $(NAME) ps -aq --filter status=exited)" ]; then \
 		printf "${GREEN}[Makefile]: RESTARTING SERVICE...\n${RESET}"; \
 		docker compose -p $(NAME) restart; \
 	else \
