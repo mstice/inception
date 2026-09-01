@@ -3,6 +3,9 @@
 set -euo pipefail
 
 WP_DIR=/var/www/inception/
+DB_PASSWORD="$(cat /run/secrets/db_password)"
+WP_ADMIN_PASSWORD="$(cat /run/secrets/wp_admin_password)"
+WP_PASSWORD="$(cat /run/secrets/wp_password)"
 
 chown -R www-data:www-data "$WP_DIR"
 
@@ -36,9 +39,6 @@ fi
 #------------------------------------------------------------------------------
 
 # Check if WordPress core is installed ----------------------------------------
-# if wp --allow-root --path="$WP_DIR" db query \
-# 	"SHOW TABLES LIKE 'wp_options';" \
-# 	--skip-column-names | grep -q wp_options
 if wp --allow-root --path="$WP_DIR" core is-installed;
 then
 	echo "WordPress is already installed."

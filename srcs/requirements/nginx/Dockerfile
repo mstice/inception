@@ -29,15 +29,8 @@ RUN mkdir -p ${CERT_FOLDER} && \
     -keyout ${KEY} \
     -subj "/C=${COUNTRY}/ST=${STATE}/L=${LOCALITY}/O=${ORGANIZATION}/OU=${UNIT}/CN=${COMMON_NAME}"
 
-# Copy configuration files
-# COPY conf/nginx.conf /etc/nginx/
 
-# TODO: update
-# Copy server configuration file and update it
 COPY conf/default /etc/nginx/sites-available/
-# RUN printf "\tserver_name ${COMMON_NAME};\n" \
-#     "\tssl_certificate ${CERTIFICATE};\n" \
-#     "\tssl_certificate_key ${KEY};\n}" >> /etc/nginx/conf.d/server.conf
 
 # Create the directory for WordPress files
 RUN mkdir -p /var/www/

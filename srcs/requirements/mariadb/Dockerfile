@@ -12,8 +12,8 @@ RUN apt update && \
     net-tools \
     && rm -rf /var/lib/apt/lists/*
 
-# TODO:
 RUN mkdir -p /run/mysqld && chown mysql:mysql /run/mysqld
+RUN mkdir -p /var/log/mysql
 
 # Copy the config file to the container
 # COPY <file path in the host> <file path to receive file>
@@ -24,5 +24,4 @@ COPY tools/setup.sh /bin/
 RUN chmod +x /bin/setup.sh
 
 # Execute the setup script and then start the database server
-CMD ["setup.sh", "mysqld_safe"]
-# ENTRYPOINT ["/bin/setup.sh"]
+ENTRYPOINT ["/bin/setup.sh"]

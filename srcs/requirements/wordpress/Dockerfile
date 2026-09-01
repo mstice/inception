@@ -5,7 +5,6 @@ EXPOSE 9000
 # Set a variable for clarity
 ARG PHPPATH=/etc/php/8.2/fpm
 
-# TODO: remove curl
 # Update the system and install required dependencies
 RUN apt update && \
     apt install -y --no-install-recommends --no-install-suggests \
